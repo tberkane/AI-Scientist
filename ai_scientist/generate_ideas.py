@@ -41,6 +41,7 @@ In <JSON>, provide the new idea in JSON format with the following fields:
 - "Name": A shortened descriptor of the idea. Lowercase, no spaces, underscores allowed.
 - "Title": A title for the idea, will be used for the report writing.
 - "Experiment": An outline of the implementation. E.g. which functions need to be added or modified, how results will be obtained, ...
+- "Dataset": A description of the dataset that would be needed for the experiment. NA if not needed.
 - "Interestingness": A rating from 1 to 10 (lowest to highest).
 - "Feasibility": A rating from 1 to 10 (lowest to highest).
 - "Novelty": A rating from 1 to 10 (lowest to highest).

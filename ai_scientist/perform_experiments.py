@@ -14,6 +14,7 @@ The proposed experiment is as follows: {idea}.
 You are given a total of up to {max_runs} runs to complete the necessary experiments. You do not need to use all {max_runs}.
 
 First, plan the list of experiments you would like to run. For example, if you are sweeping over a specific hyperparameter, plan each value you would like to test for each run.
+{dataset_prompt}
 
 Note that we already provide the vanilla baseline results, so you do not need to re-run it.
 
@@ -27,7 +28,7 @@ You can then implement the next thing on your list."""
 
 
 # RUN EXPERIMENT
-def run_experiment(folder_name, run_num, timeout=7200):
+def run_experiment(folder_name, run_num, dataset_required, timeout=7200):
     cwd = osp.abspath(folder_name)
     # COPY CODE SO WE CAN SEE IT.
     shutil.copy(
@@ -41,6 +42,8 @@ def run_experiment(folder_name, run_num, timeout=7200):
         "experiment.py",
         f"--out_dir=run_{run_num}",
     ]
+    if dataset_required:
+        command.append("--dataset_file=dataset.csv")
     try:
         result = subprocess.run(
             command, cwd=cwd, stderr=subprocess.PIPE, text=True, timeout=timeout
@@ -113,7 +116,9 @@ def run_plotting(folder_name, timeout=600):
 
 
 # PERFORM EXPERIMENTS
-def perform_experiments(idea, folder_name, coder, baseline_results) -> bool:
+def perform_experiments(
+    idea, folder_name, coder, baseline_results, dataset_required
+) -> bool:
     ## RUN EXPERIMENT
     current_iter = 0
     run = 1
@@ -122,6 +127,11 @@ def perform_experiments(idea, folder_name, coder, baseline_results) -> bool:
         idea=idea["Experiment"],
         max_runs=MAX_RUNS,
         baseline_results=baseline_results,
+        dataset_prompt=(
+            ""
+            if not dataset_required
+            else "\nTo run your experiments, make use of the dataset at `dataset.csv`. Your code should accept the argument `--dataset_file=dataset.csv`."
+        ),
     )
     while run < MAX_RUNS + 1:
         if current_iter >= MAX_ITERS:
@@ -131,7 +141,7 @@ def perform_experiments(idea, folder_name, coder, baseline_results) -> bool:
         print(coder_out)
         if "ALL_COMPLETED" in coder_out:
             break
-        return_code, next_prompt = run_experiment(folder_name, run)
+        return_code, next_prompt = run_experiment(folder_name, run, dataset_required)
         if return_code == 0:
             run += 1
             current_iter = 0

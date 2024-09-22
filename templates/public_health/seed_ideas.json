@@ -1,0 +1,10 @@
+[
+  {
+    "Name": "covid_contact_tracing",
+    "Title": "Evaluating the effectiveness of contact tracing apps for controlling the spread of COVID-19",
+    "Experiment": "In this experiment, we evaluate the effectiveness of different contact tracing apps for controlling the spread of COVID-19. We use methods from causal inference and data which we scraped from online news articles.",
+    "Interestingness": 10,
+    "Feasibility": 8,
+    "Novelty": 8
+  }
+]

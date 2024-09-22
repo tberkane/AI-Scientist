@@ -16,6 +16,7 @@ from ai_scientist.generate_ideas import generate_ideas, check_idea_novelty
 from ai_scientist.perform_experiments import perform_experiments
 from ai_scientist.perform_writeup import perform_writeup, generate_latex
 from ai_scientist.perform_review import perform_review, load_paper, perform_improvement
+from ai_scientist.collect_dataset import collect_dataset
 
 NUM_REFLECTIONS = 3
 
@@ -196,10 +197,18 @@ def do_idea(
             edit_format="diff",
         )
 
+        dataset_required = "Dataset" in idea and idea["Dataset"] != "NA"
+        if dataset_required:
+            print_time()
+            print("Collecting dataset")
+            collect_dataset(idea["Dataset"], folder_name, client)
+
         print_time()
         print(f"*Starting Experiments*")
         try:
-            success = perform_experiments(idea, folder_name, coder, baseline_results)
+            success = perform_experiments(
+                idea, folder_name, coder, baseline_results, dataset_required
+            )
         except Exception as e:
             print(f"Error during experiments: {e}")
             print(f"Experiments failed for idea {idea_name}")
